@@ -1,6 +1,16 @@
 class BlogsController < ApplicationController
   def index
-    @blogs = Blog.all
+    @categories = Category.all
+
+    cate = params[:cate]
+
+    if !cate.nil?
+      @blogs = Blog.where(:category_id => cate)
+    else
+      @blogs = Blog.all
+    end
+
+  
   end
 
   def show
@@ -14,20 +24,21 @@ class BlogsController < ApplicationController
   def create
     @blog = Blog.create(blog_params)
 
+
     if @blog.save
       redirect_to @blog
-    else 
+    else
       render :new
     end
   end
 
   def edit
     @blog = Blog.find(params[:id])
-    
   end
 
   def update
     @blog = Blog.find(params[:id])
+
     if @blog.update(blog_params)
       redirect_to @blog
     else
@@ -43,11 +54,9 @@ class BlogsController < ApplicationController
   end
 
 
-
   private
 
   def blog_params
     params.require(:blog).permit(:title, :content, :category_id)
   end
 end
- 
